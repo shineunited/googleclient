@@ -1,0 +1,25 @@
+{
+	"name": "shineunited/googleclient",
+	"type": "library",
+	"description": "Tools for Google API Client",
+	"keywords": ["google", "client", "api", "silex"],
+	"license": "MIT",
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"require-dev": {
+		"silex/silex": "^1.2",
+		"google/apiclient": "^1.1",
+		"phpunit/phpunit": "^4.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"ShineUnited\\GoogleClient\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"ShineUnited\\GoogleClient\\Tests\\": "tests/"
+		}
+	}
+}
