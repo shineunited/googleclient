@@ -2,15 +2,15 @@
 	"name": "shineunited/googleclient",
 	"type": "library",
 	"description": "Tools for Google API Client",
-	"keywords": ["google", "client", "api", "silex"],
+	"keywords": ["google", "google client", "google api", "silex"],
 	"license": "MIT",
 	"require": {
-		"php": ">=5.4.0"
+		"php": ">=5.4.0",
+		"google/apiclient": "^1.1"
 	},
 	"require-dev": {
-		"silex/silex": "^1.2",
-		"google/apiclient": "^1.1",
-		"phpunit/phpunit": "^4.6"
+		"phpunit/phpunit": "^4.6",
+		"silex/silex": "^1.2"
 	},
 	"autoload": {
 		"psr-4": {
