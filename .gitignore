@@ -3,3 +3,5 @@
 composer.lock
 composer.phar
 vendor
+bin/scopes.json
+bin/services.json

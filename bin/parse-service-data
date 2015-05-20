@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+require_once(__DIR__ . '/../vendor/autoload.php');
+
+// build list of google api services and scopes
+$services = [];
+$scopes = [];
+
+$service_dir = __DIR__ . '/../vendor/google/apiclient/src/Google/Service';
+$service_list = scandir($service_dir);
+foreach($service_list as $service_file) {
+	if($service_file{0} != '.' && substr($service_file, -4) == '.php') {
+		$service_name = substr($service_file, 0, -4);
+		$service_class = '\Google_Service_' . $service_name;
+		$service_key = strtolower($service_name);
+
+		$reflection = new \ReflectionClass($service_class);
+		if($reflection->isSubclassOf('Google_Service')) {
+			$services[$service_key] = $service_class;
+
+			$constants = $reflection->getConstants();
+			foreach($constants as $constant_name => $constant_value) {
+				$scope_key =  $service_key . '.' . strtolower($constant_name);
+				$scopes[$scope_key] = $constant_value;
+			}
+		}
+	}
+}
+
+file_put_contents('./services.json', json_encode($services, JSON_PRETTY_PRINT));
+file_put_contents('./scopes.json', json_encode($scopes, JSON_PRETTY_PRINT));
