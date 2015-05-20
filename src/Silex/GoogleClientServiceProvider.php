@@ -12,14 +12,16 @@ class GoogleClientServiceProvider implements ServiceProviderInterface {
 
 		$app['gapi.services'] = $app->share(function() use ($app) {
 			$path = __DIR__ . '/../Resources/services.json';
+			$data = file_get_contents($path);
 
-			return json_decode($path, true);
+			return json_decode($data, true);
 		});
 
 		$app['gapi.scopes'] = $app->share(function() use ($app) {
 			$path = __DIR__ . '/../Resources/scopes.json';
+			$data = file_get_contents($path);
 
-			return json_decode($path, true);
+			return json_decode($data, true);
 		});
 
 		$app['gapi.config'] = $app->share(function() use ($app) {
