@@ -10,7 +10,19 @@ class GoogleClientServiceProvider implements ServiceProviderInterface {
 
 	public function register(Application $app) {
 
-		$app['gapi.config'] = $app->share(function() use($app) {
+		$app['gapi.services'] = $app->share(function() use ($app) {
+			$path = __DIR__ . '/../Resources/services.json';
+
+			return json_decode($path, true);
+		});
+
+		$app['gapi.scopes'] = $app->share(function() use ($app) {
+			$path = __DIR__ . '/../Resources/scopes.json';
+
+			return json_decode($path, true);
+		});
+
+		$app['gapi.config'] = $app->share(function() use ($app) {
 			$options = $app['gapi.options'];
 
 			$config = new \Google_Config();
@@ -59,6 +71,10 @@ class GoogleClientServiceProvider implements ServiceProviderInterface {
 					}
 
 					foreach($scopes as $scope) {
+						if(isset($app['gapi.scopes'][strtolower($scope)])) {
+							$scope = $app['gapi.scopes'][strtolower($scope)];
+						}
+
 						$client->addScope($scope);
 					}
 				}
@@ -80,23 +96,11 @@ class GoogleClientServiceProvider implements ServiceProviderInterface {
 			}
 		};
 
-		$service_dir = __DIR__ . '/../../vendor/google/apiclient/src/Google/Service';
-		$service_list = scandir($service_dir);
-		foreach($service_list as $service_file) {
-			if($service_file{0} != '.' && substr($service_file, -4) == '.php') {
-				$service_name = substr($service_file, 0, -4);
-				$service_class = '\Google_Service_' . $service_name;
-				$service_key = 'gapi.service.' . strtolower($service_name);
-
-				$app[$service_key] = $app->share(function() use ($app, $service_class) {
-					$class = new \ReflectionClass($service_class);
-					if($class->isSubclassOf('Google_Service')) {
-						return $class->newInstance($app['gapi.client']);
-					} else {
-						return null;
-					}
-				});
-			}
+		foreach($app['gapi.services'] as $service => $classname) {
+			$app['gapi.service.' . $service] = $app->share(function() use ($app, $classname) {
+				$class = new \ReflectionClass($classname);
+				return $class->newInstance($app['gapi.client']);
+			});
 		}
 	}
 
